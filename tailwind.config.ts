@@ -1,14 +1,13 @@
-[build]
-command = "npm run build:client"
-functions = "netlify/functions"
-publish = "dist/spa"
+import type { Config } from 'tailwindcss'
 
-
-[functions]
-external_node_modules = ["express"]
-node_bundler = "esbuild"
-[[redirects]]
-force = true
-from = "/api/*"
-status = 200
-to = "/.netlify/functions/api/:splat"
+export default {
+  darkMode: ["class"],
+  content: [
+    './client/**/*.{ts,tsx}',
+    './client/index.html',
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config
