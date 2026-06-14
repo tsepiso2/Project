@@ -1,0 +1,37 @@
+import { RequestHandler } from "express";
+
+export const handleSubmitFiles: RequestHandler = async (req, res) => {
+  try {
+    const { username, email, files, types } = req.body;
+
+    if (!username || !email) {
+      return res.status(400).json({ error: "Username and email are required" });
+    }
+
+    const fileList = Array.isArray(files) ? files : [files];
+    const typeList = Array.isArray(types) ? types : [types];
+
+    const submission = {
+      id: Date.now().toString(),
+      studentName: username,
+      studentEmail: email,
+      files: fileList.map((name: string, idx: number) => ({
+        name,
+        type: typeList[idx] || 'other',
+      })),
+      submittedAt: new Date().toISOString(),
+    };
+
+    console.log(`📧 Assignment submitted by: ${username} (${email})`);
+    console.log(`📁 Files: ${fileList.length}`);
+
+    res.json({
+      success: true,
+      message: `Assignment received for ${username}. Email notification would be sent to ${email}`,
+      submission,
+    });
+  } catch (error) {
+    console.error("File submission error:", error);
+    res.status(500).json({ error: "Failed to process file submission" });
+  }
+};
